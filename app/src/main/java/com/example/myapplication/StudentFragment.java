@@ -1,64 +1,53 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link StudentFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class StudentFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public StudentFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment StudentFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static StudentFragment newInstance(String param1, String param2) {
-        StudentFragment fragment = new StudentFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        TextView textViewRollNo, textViewName,
+                textViewClass, textViewSchool, textViewAddress;
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_student, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_student, container, false);
+        textViewRollNo = rootView.findViewById(R.id.textViewRollNo3);
+        textViewName = rootView.findViewById(R.id.textViewName2);
+        textViewClass = rootView.findViewById(R.id.textViewClass2);
+        textViewSchool = rootView.findViewById(R.id.textViewSchool2);
+        textViewAddress = rootView.findViewById(R.id.textViewAddress2);
+
+        Bundle b = getArguments();
+        assert b != null;
+        Student student = (Student)b.getSerializable("student");
+        textViewRollNo.setText(textViewRollNo.getText().toString() + student.getRollNo());
+        textViewName.setText(textViewName.getText().toString() + student.getName());
+        textViewClass.setText(textViewClass.getText().toString() + Integer.toString(student.getStdClass()));
+        textViewSchool.setText(textViewSchool.getText().toString() + student.getSchool());
+        textViewAddress.setText(textViewAddress.getText().toString() + student.getAddress());
+
+
+        return rootView;
     }
 }
