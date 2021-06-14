@@ -7,16 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.StudentsViewHolder> {
     private Context mCtx;
+    private FragmentManager fragmentManager;
     private List<Student> studentList;
 
-    public StudentsAdapter(Context mCtx, List<Student> studentList) {
+    public StudentsAdapter(Context mCtx, FragmentManager fragmentManager, List<Student> studentList) {
         this.mCtx = mCtx;
+        this.fragmentManager = fragmentManager;
         this.studentList = studentList;
     }
 
@@ -59,11 +64,18 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.Studen
 
         @Override
         public void onClick(View view) {
-            Student student = studentList.get(getAdapterPosition());
+//            Student student = studentList.get(getAdapterPosition());
+//
+//            Intent intent = new Intent(mCtx, UpdateActivity.class);
+//            intent.putExtra("student", student);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            mCtx.startActivity(intent);
 
-            Intent intent = new Intent(mCtx, UpdateActivity.class);
-            intent.putExtra("student", student);
-            mCtx.startActivity(intent);
+            fragmentManager.beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.bodyFragment, StudentFragment.class, null)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 }
