@@ -8,34 +8,47 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class RegisterActivity extends AppCompatActivity {
-    private EditText editName, editRollNo, editSchool, editAddress;
+public class UpdateActivity extends AppCompatActivity {
+    private TextView textViewRollNo;
+    private EditText editName, editSchool, editAddress;
     private Spinner classSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_update);
 
-        editName = findViewById(R.id.editName);
-        editRollNo = findViewById(R.id.editRollNo);
-        editSchool = findViewById(R.id.editSchool);
-        editAddress = findViewById(R.id.editAddress);
-        classSpinner = findViewById(R.id.classSpinner);
+        editName = findViewById(R.id.editName2);
+        editSchool = findViewById(R.id.editSchool2);
+        editAddress = findViewById(R.id.editAddress2);
+        classSpinner = findViewById(R.id.classSpinner2);
+        textViewRollNo = findViewById(R.id.textViewRollNo2);
 
-        findViewById(R.id.submitBtn).setOnClickListener(new View.OnClickListener() {
+        final Student student = (Student) getIntent().getSerializableExtra("student");
+        loadStudent(student);
+
+        findViewById(R.id.submitBtn2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveTask();
+                Toast.makeText(getApplicationContext(),"Updating", Toast.LENGTH_LONG).show();
+                updateStudent(student);
             }
         });
     }
 
-    private void saveTask(){
+    private void loadStudent(Student student) {
+        textViewRollNo.setText(student.getRollNo());
+        editName.setText(student.getName());
+        editSchool.setText(student.getSchool());;
+        editAddress.setText(student.getAddress());
+        classSpinner.setSelection(student.getStdClass()-1);
+    }
+
+    private void updateStudent(final Student student) {
         final String sName = editName.getText().toString().trim();
-        final String sRollNo = editRollNo.getText().toString().trim();
         final String sSchool = editSchool.getText().toString().trim();
         final int sClass = Integer.parseInt(classSpinner.getSelectedItem().toString());
         final String sAddress = editAddress.getText().toString().trim();
@@ -44,11 +57,6 @@ public class RegisterActivity extends AppCompatActivity {
         if(sName.isEmpty()){
             editName.setError("Name required");
             editName.requestFocus();
-            return;
-        }
-        if(sRollNo.isEmpty()){
-            editRollNo.setError("Roll no. required");
-            editRollNo.requestFocus();
             return;
         }
         if(sSchool.isEmpty()){
@@ -62,38 +70,31 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // asynchronously update the database
-        class SaveStudent extends AsyncTask<Void, Void, Void> {
+
+        class UpdateTask extends AsyncTask<Void, Void, Void> {
 
             @Override
-            protected Void doInBackground(Void... voids){
-
-                // create a Student
-                Student student = new Student();
-                student.setAddress(sAddress);
+            protected Void doInBackground(Void... voids) {
                 student.setName(sName);
-                student.setRollNo(sRollNo);
                 student.setSchool(sSchool);
+                student.setAddress(sAddress);
                 student.setStdClass(sClass);
-
-                // create entry in database
                 DatabaseClient.getInstance(getApplicationContext()).getAppDatabase()
                         .studentDao()
-                        .insert(student);
-
+                        .update(student);
                 return null;
             }
 
             @Override
-            protected void onPostExecute(Void aVoid){
+            protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_LONG).show();
                 finish();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(UpdateActivity.this, MainActivity.class));
             }
         }
 
-        SaveStudent ss = new SaveStudent();
-        ss.execute();
+        UpdateTask ut = new UpdateTask();
+        ut.execute();
     }
 }

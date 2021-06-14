@@ -15,14 +15,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Button registerBtn = findViewById(R.id.registerBtn);
-        registerBtn.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.registerBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("Registering","Clicked register");
                 openRegisterActivity();
             }
         });
+
+        findViewById(R.id.listBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("Listing", "Clicked Listview");
+                openListActivity();
+            }
+        });
+    }
+
+    private void openListActivity() {
+        Intent listIntent = new Intent(this, ListActivity.class);
+        startActivity(listIntent);
     }
 
     private void openRegisterActivity() {
