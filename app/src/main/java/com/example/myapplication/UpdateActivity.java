@@ -33,7 +33,6 @@ public class UpdateActivity extends AppCompatActivity {
         findViewById(R.id.submitBtn2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Updating", Toast.LENGTH_LONG).show();
                 updateStudent(student);
             }
         });

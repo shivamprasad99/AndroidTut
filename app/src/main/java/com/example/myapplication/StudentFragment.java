@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -47,6 +48,15 @@ public class StudentFragment extends Fragment {
         textViewSchool.setText(textViewSchool.getText().toString() + student.getSchool());
         textViewAddress.setText(textViewAddress.getText().toString() + student.getAddress());
 
+        rootView.findViewById(R.id.updateBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),UpdateActivity.class);
+                intent.putExtra("student", student);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(intent);
+            }
+        });
 
         return rootView;
     }
