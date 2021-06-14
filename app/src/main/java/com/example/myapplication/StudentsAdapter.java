@@ -59,9 +59,10 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.Studen
 
         @Override
         public void onClick(View view) {
+            Student student = studentList.get(getAdapterPosition());
             StudentFragment studentFragment = new StudentFragment();
             Bundle b = new Bundle();
-            b.putSerializable("student",t);
+            b.putSerializable("student",student);
             studentFragment.setArguments(b);
             fragmentManager.beginTransaction()
                     .setReorderingAllowed(true)
