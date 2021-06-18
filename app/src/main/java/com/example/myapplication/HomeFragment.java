@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,13 @@ public class HomeFragment extends Fragment {
         recyclerView = rootView.findViewById(R.id.recyclerview_students);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
 
-        getStudents();
+        Bundle b = getArguments();
+        if(b == null || b.getString("query").isEmpty())
+            getStudents();
+        else {
+            String queryText = b.getString("query");
+            getSimilarStudents(queryText);
+        }
 
         // Inflate the layout for this fragment
         return rootView;
@@ -43,12 +50,11 @@ public class HomeFragment extends Fragment {
         class GetStudents extends AsyncTask<Void, Void, List<Student>> {
             @Override
             protected List<Student> doInBackground(Void... voids) {
-                List<Student> studentList = DatabaseClient
+                return DatabaseClient
                         .getInstance(getActivity().getApplicationContext())
                         .getAppDatabase()
                         .studentDao()
                         .getAll();
-                return studentList;
             }
 
             @Override
@@ -61,5 +67,27 @@ public class HomeFragment extends Fragment {
 
         GetStudents gs = new GetStudents();
         gs.execute();
+    }
+
+    private void getSimilarStudents(String queryText) {
+        class GetSimilarStudents extends AsyncTask<Void, Void, List<Student>> {
+            @Override
+            protected List<Student> doInBackground(Void... voids) {
+                return DatabaseClient
+                        .getInstance(getActivity().getApplicationContext())
+                        .getAppDatabase()
+                        .studentDao()
+                        .getSimilarNames(queryText);
+            }
+
+            @Override
+            protected void onPostExecute(List<Student> students) {
+                super.onPostExecute(students);
+                StudentsAdapter studentsAdapter = new StudentsAdapter(getActivity().getApplicationContext(), getActivity().getSupportFragmentManager(), students);
+                recyclerView.setAdapter(studentsAdapter);
+            }
+        }
+        GetSimilarStudents gss = new GetSimilarStudents();
+        gss.execute();
     }
 }

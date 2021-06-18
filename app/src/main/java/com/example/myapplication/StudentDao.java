@@ -21,4 +21,7 @@ public interface StudentDao {
 
     @Update
     void update(Student student);
+
+    @Query("SELECT * FROM student WHERE name LIKE '%' || :query || '%' OR rollNo LIKE '%' || :query || '%'")
+    List<Student> getSimilarNames(String query);
 }
